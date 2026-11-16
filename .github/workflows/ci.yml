@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: lint, tests, demo (Tesseract 5)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tesseract
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-eng
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: pytest -q
+      - run: make demo
+      - uses: actions/upload-artifact@v4
+        if: matrix.python-version == '3.12'
+        with:
+          name: demo-outputs
+          path: |
+            docs/images/*.png
+            outputs/metrics.json
+            outputs/results.csv
+
+  docker:
+    name: Docker image + API smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t invoice-ocr-api .
+      - run: docker run -d -p 8000:8000 --name api invoice-ocr-api
+      - name: Generate a few invoices inside the container and send one to the API
+        run: |
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 1; done
+          docker exec api python -m invoiceocr --root /tmp/demo generate --n 4
+          f=$(docker exec api sh -c 'ls /tmp/demo/data/invoices/*.png /tmp/demo/data/invoices/*.jpg 2>/dev/null | head -1')
+          docker cp "api:$f" ./sample
+          curl -sf -F file=@sample localhost:8000/extract | tee response.json
+          python3 -c "import json; d = json.load(open('response.json')); assert d['status'] in ('auto_approved', 'needs_review'); print(d['status'], d['invoice']['invoice_number'])"

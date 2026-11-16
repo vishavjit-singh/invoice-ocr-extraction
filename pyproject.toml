@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoice-ocr-extraction"
+version = "1.0.0"
+description = "Invoice OCR and structured extraction: OpenCV + Tesseract, layout rules, optional OpenAI fallback, pydantic validation and review routing."
+authors = [{ name = "Vishavjit Singh Saini" }]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+invoiceocr = "invoiceocr.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]

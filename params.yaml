@@ -1,0 +1,28 @@
+# Every tunable number in the pipeline. `make demo` uses these values.
+generate:
+  seed: 14
+  n_invoices: 120            # the generator handles any count; 120 keeps `make demo` near two minutes on 2 CPUs
+  share_pdf_text: 0.15       # digital PDFs with a text layer (no OCR needed)
+  share_pdf_scan: 0.10       # scanned PDFs: a degraded image inside a PDF
+  share_document_errors: 0.08  # invoices printed with a real mistake (bad total, bad GSTIN, ...)
+  # scan degradation by level: max rotation (deg), gaussian noise sigma, blur radius, JPEG quality, contrast
+  degradation:
+    0: {rotation: 0.0, noise: 0, blur: 0.0, jpeg: null, contrast: 1.00, downscale: 1.00}
+    1: {rotation: 0.8, noise: 6, blur: 0.4, jpeg: 85, contrast: 0.90, downscale: 1.00}
+    2: {rotation: 1.8, noise: 12, blur: 0.8, jpeg: 60, contrast: 0.75, downscale: 0.85}
+    3: {rotation: 3.0, noise: 15, blur: 1.0, jpeg: 45, contrast: 0.65, downscale: 0.75}
+
+ocr:
+  workers: 2                 # parallel tesseract processes (each single-threaded)
+  psm: 6                     # tesseract page segmentation mode
+  deskew: true
+  denoise: nlmeans           # nlmeans | median | false   (applied to noisy pages only)
+  binarize: false            # adaptive threshold; off by default
+
+routing:
+  min_field_confidence: 0.70 # fields not covered by a passing cross-check need at least this OCR confidence
+  llm_fallback_confidence: 0.70
+
+llm:
+  model: gpt-4o-mini
+  timeout_s: 60

@@ -1,0 +1,16 @@
+# docker compose up --build   → API on http://localhost:8000
+#   curl -F file=@data/invoices/inv_0000.png localhost:8000/extract
+name: invoiceocr
+
+services:
+  api:
+    build: .
+    image: invoice-ocr-api:latest
+    ports: ["8000:8000"]
+    environment:
+      # optional: enables ?extractor=hybrid|llm. Leave unset to use the rule extractor only.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 5s
+      retries: 10

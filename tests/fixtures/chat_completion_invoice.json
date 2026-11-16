@@ -1,0 +1,23 @@
+{
+  "_comment": "Hand-written in the documented Chat Completions response shape for offline tests. Not a recorded API call.",
+  "id": "chatcmpl-test-0001",
+  "object": "chat.completion",
+  "created": 1767225600,
+  "model": "gpt-4o-mini",
+  "choices": [
+    {
+      "index": 0,
+      "finish_reason": "stop",
+      "message": {
+        "role": "assistant",
+        "refusal": null,
+        "content": "{\"vendor_name\": \"Harborview Analytics LLC\", \"vendor_tax_id\": \"14-8360558\", \"invoice_number\": \"HA-07874\", \"issue_date\": \"2026-02-11\", \"due_date\": \"2026-03-13\", \"currency\": \"USD\", \"line_items\": [{\"description\": \"Data pipeline review, per hour\", \"quantity\": 22.5, \"unit_price\": 190.26, \"amount\": 4280.85}], \"subtotal\": 4280.85, \"tax\": 0.0, \"total\": 4280.85}"
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 812,
+    "completion_tokens": 141,
+    "total_tokens": 953
+  }
+}
