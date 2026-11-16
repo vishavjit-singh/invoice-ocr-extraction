@@ -76,7 +76,7 @@ def architecture(out: Path) -> Path:
         MUTED)
     arrow(7.5, 3.75, 8.0, 4.2)
     arrow(9.15, 3.55, 9.15, 3.2, MUTED)
-    ax.text(9.25, 3.3, "hybrid: weak\nfields only", fontsize=7.2, color=MUTED, va="center")
+    ax.text(9.22, 3.375, "hybrid: weak fields", fontsize=7.2, color=MUTED, va="center")
     box(10.8, 2.6, 2.05, 1.75, "Validate", "pydantic Invoice:\nformat, checksum,\narithmetic, dates", GOOD)
     arrow(10.3, 4.2, 10.8, 3.75)
     arrow(10.3, 2.5, 10.8, 3.1, MUTED)
